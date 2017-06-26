@@ -53,3 +53,5 @@ RUF = 1     # Right Upper Foot -Shimmer available
 # Select Classifier from the Scikit learn library
 
 #--------Validation------------
+LOPO = 1
+CrossValidation = 0
