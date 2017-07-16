@@ -1,7 +1,9 @@
 import LoadRawData
-import numpy as np
 import Config
+import FeatureConstruction
 #TODO RENAME TO NWMAF
 
 configuration = Config.loadconfig()
-RawSensorData,ElanGroundTruth = LoadRawData.loaddata(configuration)
+FeatureConstruction.Featureconstruction(configuration)
+
+

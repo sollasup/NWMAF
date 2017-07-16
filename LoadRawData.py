@@ -1,5 +1,5 @@
 import pandas as pd
-
+import FeatureConstruction
 
 def loaddata(configuration):
     RawSensorData=[]
@@ -10,7 +10,20 @@ def loaddata(configuration):
             print session
             RawSensorData.append(pd.read_csv(r'C:\Users\Sebastian\Documents\Recordings/'+"ID00"+str(participant)
                         +"/"+str(session)+"/"+"mergedID00"+str(participant)+"cut.csv",sep="\t"))
-            ElanGroundTruth.append(pd.read_csv(r'C:\Users\Sebastian\Documents\Recordings/' + "ID00" + str(participant)
-                        + "/" + str(session) + "/" + "elan" + ".csv", sep = "\t",error_bad_lines=False))
+            elan=pd.read_csv(r'C:\Users\Sebastian\Documents\Recordings/' + "ID00" + str(participant)
+                        + "/" + str(session) + "/" + "elan" + ".csv", sep = "\t",error_bad_lines=False)
+            elan = pd.DataFrame(elan.as_matrix())
+            elan = elancreate(elan)
+            ElanGroundTruth.append(elan)
 
 
+    return RawSensorData,ElanGroundTruth
+
+def elancreate(elan):
+
+    #elan = pd.concat([elan.iloc[:,[0,2,3,4,5]]])
+    elan = pd.DataFrame(elan.iloc[:,[0,2,3,4,5]])
+    elan = elan.as_matrix()
+
+
+    return  elan

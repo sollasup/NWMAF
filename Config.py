@@ -14,16 +14,16 @@ def loadconfig():
     if(UseXsensData==1):
         Participant1 = 0
         Participant2 = 1
-        Participant3 = 1
-        Participant4 = 1
-        Participant5 = 1
+        Participant3 = 0
+        Participant4 = 0
+        Participant5 = 0
         Participant6 = 0
         Participant7 = 0
         Participant8 = 0
         Participant9 = 0
         Participant10 = 0
-        Session1 = 1
-        Session2 = 1
+        Session1 = 0
+        Session2 = 0
         Session3 = 1
         Session4 = 1
         Session5 = 0
@@ -60,7 +60,9 @@ def loadconfig():
 
     # -------Feature Selection------------
 
-    #TODO Feature list
+    average = 0
+    maximum = 1
+    minimum = 1
 
     # -------Choose Classifier------------
     # Select Classifier from the Scikit learn library
@@ -90,7 +92,10 @@ def loadconfig():
 
     Session = np.array([Session1,Session2,Session3,Session4,Session5])
 
+    Features = np.array([average,maximum,minimum])
+
     configuration= {"Participants":np.where(Participant==1)[0]+1,
                     "Sessions":np.where(Session==1)[0]+1,
-                    "Sensors":[STE,LUA,LLA,LNS,RUA,RLA,RNS,Cen,LUL,LLL,LUF,RUL,RLL,RUF]}
+                    "Sensors":[STE,LUA,LLA,LNS,RUA,RLA,RNS,Cen,LUL,LLL,LUF,RUL,RLL,RUF],
+                    "Features":np.where(Features==1)[0]+1}
     return configuration
