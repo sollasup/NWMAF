@@ -13,10 +13,10 @@ def loadconfig():
     UseXsensData = 1
     if(UseXsensData==1):
         Participant1 = 0
-        Participant2 = 1
-        Participant3 = 0
-        Participant4 = 0
-        Participant5 = 0
+        Participant2 = 0
+        Participant3 = 1
+        Participant4 = 1
+        Participant5 = 1
         Participant6 = 0
         Participant7 = 0
         Participant8 = 0
@@ -60,7 +60,7 @@ def loadconfig():
 
     # -------Feature Selection------------
 
-    average = 0
+    average = 1
     maximum = 1
     minimum = 1
 
@@ -96,6 +96,6 @@ def loadconfig():
 
     configuration= {"Participants":np.where(Participant==1)[0]+1,
                     "Sessions":np.where(Session==1)[0]+1,
-                    "Sensors":[STE,LUA,LLA,LNS,RUA,RLA,RNS,Cen,LUL,LLL,LUF,RUL,RLL,RUF],
+                    "Sensors":[STE*2,LUA*24,LLA*46,LNS*68,RUA*90,RLA*112,RNS*134,Cen*156,LUL*178,LLL*200,LUF*222,RUL*244,RLL*266,RUF*288],
                     "Features":np.where(Features==1)[0]+1}
     return configuration

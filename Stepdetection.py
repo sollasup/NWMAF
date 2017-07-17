@@ -49,21 +49,14 @@ def elantosteps(dataMatrix,elan):
     labeldata = []
     for i in range(0,len(new)):
             if new[i,4]==3 or new[i,4]==2 or new[i,4]==1:
-                print new[i,4]
                 labeldata.append(new[i,:])
     labeldata = np.array(labeldata)
-    print labeldata
-    matrixsteps = pd.DataFrame(matrix[labeldata[0,0]:labeldata[0,1],:])
-    matrix = pd.DataFrame(matrix)
+    matrixsteps = [matrix[labeldata[0,0]:labeldata[0,1],:]]
     for i in range(1,len(labeldata)):
-        matrixsteps = pd.concat([matrixsteps,matrix.iloc[labeldata[i,0]:labeldata[i,1],:]])
+        matrixsteps.append(matrix[labeldata[i,0]:labeldata[i,1],:])
 
-    label = []
-    for i in range(0,len(labeldata)):
-        for k in range(labeldata[i,0],labeldata[i,1]):
-            labels = np.array(labeldata[i,4:])
-            #labels = map(int,labels)
-            label.append(labels)
+    label = labeldata
+
 
 
 
@@ -80,21 +73,15 @@ def elantosteps(dataMatrix,elan):
             label.append(labeldata[i,:])
 
     label = np.array(label)
-    print label
     matrix=np.array(matrix)
-    matrixsteps = pd.DataFrame(matrix[label[0,0]:label[0,1],:])
-    matrix = pd.DataFrame(matrix)
+    matrixsteps = [matrix[label[0,0]:label[0,1],:]]
+
     for i in range(1,len(label)):
-        matrixsteps = pd.concat([matrixsteps,matrix.iloc[label[i,0]:label[i,1],:]])
+        matrixsteps.append(matrix[label[i,0]:label[i,1],:])
     label = label[:,:]
 
+    labelnew = label[:,4:]
 
-    labelnew = []
-    for i in range(0,len(label)):
-        for k in range(label[i,0],label[i,1]):
-            labels = np.array(label[i,4:])
-            #labels = map(int,labels)
-            labelnew.append(labels)
 
     return matrixsteps,labelnew,matrixstepspass,labelpass[:,0]
 
@@ -117,44 +104,45 @@ def videosteps(dataMatrix, elan):
         nearest = steps[nearest,1]
         realsteps.append([int(nearest2),int(nearest),int(elan[i,0])*20,int(elan[i,1])*20])
     realsteps = np.array(realsteps)
+    if False:
+        plt.plot(newMatrix[:,[202,268]],label = "Beschleunigung senkrecht")
 
-    plt.plot(newMatrix[:,202],label = "Beschleunigung senkrecht")
+        plt.axvline(3,color ='r',label="Bergsteigeralgorithmus Schritt")
+        plt.axvline(3,color ='g',label="Video Schritt")
+        plt.legend(fontsize = 18)
+        plt.title("Schritterkennung",fontsize=18)
+        plt.xlabel("Datenpunkte [s/50]",fontsize = 18)
+        plt.ylabel("Beschleunigung [m/s^2]", fontsize = 18)
+        plt.xticks(fontsize  =16)
+        plt.yticks(fontsize = 16)
+        distance=[]
+        distance2=[]
 
-    plt.axvline(3,color ='r',label="Bergsteigeralgorithmus Schritt")
-    plt.axvline(3,color ='g',label="Video Schritt")
-    plt.legend(fontsize = 18)
-    plt.title("Schritterkennung",fontsize=18)
-    plt.xlabel("Datenpunkte [s/50]",fontsize = 18)
-    plt.ylabel("Beschleunigung [m/s^2]", fontsize = 18)
-    plt.xticks(fontsize  =16)
-    plt.yticks(fontsize = 16)
-    distance=[]
-    distance2=[]
-
-    for  xs in elanhalbe[:,0]:
-        plt.axvline(x=xs,color = 'r')
-    for  xs in elanhalbe[:,1]:
-        plt.axvline(x=xs,color = 'r')
-    for  xs in realsteps[:,0]:
-        plt.axvline(x=xs,color = 'g')
-    for  xs in realsteps[:,1]:
-        plt.axvline(x=xs,color = 'g')
-    for  xs in stepleft[:,0]:
-       plt.axvline(x=xs,color = 'g')
-    for  xs in stepleft[:,1]:
-       plt.axvline(x=xs,color = 'g')
-    plt.show()
-    for k in range(len(elanhalbe[:, 0])):
-        distance.append(elanhalbe[k, 0] - realsteps[k, 0])
-        distance2.append(elanhalbe[k, 1] - realsteps[k, 1])
+        for  xs in elanhalbe[:,0]:
+            plt.axvline(x=xs,color = 'r')
+        for  xs in elanhalbe[:,1]:
+            plt.axvline(x=xs,color = 'r')
+        for  xs in realsteps[:,0]:
+            plt.axvline(x=xs,color = 'g')
+        for  xs in realsteps[:,1]:
+            plt.axvline(x=xs,color = 'g')
+        if False:
+            for  xs in stepleft[:,0]:
+               plt.axvline(x=xs,color = 'g')
+            for  xs in stepleft[:,1]:
+               plt.axvline(x=xs,color = 'g')
+        plt.show()
+        for k in range(len(elanhalbe[:, 0])):
+            distance.append(elanhalbe[k, 0] - realsteps[k, 0])
+            distance2.append(elanhalbe[k, 1] - realsteps[k, 1])
 
 
-    print np.array(distance).var()
-    print np.array(distance).mean()
-    print np.array(distance2).var()
-    print np.array(distance2).mean()
-    plt.hist(distance)
-    plt.show()
+        print np.array(distance).var()
+        print np.array(distance).mean()
+        print np.array(distance2).var()
+        print np.array(distance2).mean()
+        plt.hist(distance)
+        plt.show()
     return newMatrix, realsteps
 
 
@@ -215,8 +203,7 @@ def getmaximas(dataMatrix, Sensor=[290]):
     signal = dataMatrix[:,Sensor[0]]
     maxAbsValue, maxAbsFreq = FourierTransformation.maxAbsFreq(signal[:])
     Filtered = filter(dataMatrix,Sensor,maxAbsFreq)
-
-    return argrelmax(Filtered[:,Sensor],order=25)
+    return argrelmax(Filtered[:,Sensor],order=23)
 
 
 def filter(dataMatrix,Sensors, highcut=0, lowcut= 0, Ordnung =2, filtertype = "lowpass"):
@@ -244,53 +231,3 @@ def filter(dataMatrix,Sensors, highcut=0, lowcut= 0, Ordnung =2, filtertype = "l
 
 
 
-def getstepvalues(matrix,label,Sensors):
-
-    Sensorchooice = Sensors
-    testmatrix = matrix
-    testlabel = label
-    a,b = stepDetectionright(testmatrix)
-
-    testmatrix= (pd.DataFrame(testmatrix))
-    zeros = np.zeros(len(testmatrix))
-    for xs in a[:, 0]:
-        zeros[xs]=1
-        plt.axvline(x=xs, color='r')
-    for xs in a[:, 1]:
-        plt.axvline(x=xs, color='r')
-    for xs in a[:, 0]:
-        plt.axvline(x=xs, color='g')
-    for xs in a[:, 1]:
-        plt.axvline(x=xs, color='g')
-    plt.plot(testmatrix.iloc[:,202])
-    plt.show()
-    matrix=testmatrix.iloc[:,[68,70,69,134,136,135]]
-
-    new = pd.concat([matrix,pd.DataFrame(zeros)],axis=1)
-    plt.plot(new)
-    plt.show()
-    labels =[]
-    for t in a:
-        labels1 =[]
-        for k in range(len(testlabel[1,:])):
-            x = np.array(testlabel[t[0]:t[1],k])
-            x= x.astype(int)
-
-            counts = np.bincount(x)
-            labels1.append(np.argmax(counts))
-        labels.append(labels1)
-    labels = pd.DataFrame(labels)
-    labels = labels.as_matrix()
-    datas =[]
-
-    for t in a:
-        columns =[]
-        for i in Sensorchooice:
-            columns.append(np.mean(np.array(testmatrix[t[0]:t[1],i])))
-
-        datas.append(columns)
-
-    datas = pd.DataFrame(datas)
-    datas = datas.as_matrix()
-
-    return datas,labels
