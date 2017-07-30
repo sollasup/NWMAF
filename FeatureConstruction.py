@@ -14,6 +14,10 @@ def Featurefiles(configuration):
     checksum=0
     for participant in configuration.get("Participants"):
         for session in configuration.get("Sessions"):
+            print "----"
+            print "Participant"+str(participant)
+            print "Session"+str(session)
+
             featuresforsensors = []
             for sensor in configuration.get("Sensors"):
                 for feature in configuration.get("Features"):
@@ -34,7 +38,8 @@ def Featurefiles(configuration):
                             Stepfeatures=[]
                             for steps in dataset:
                                 FeatureList=[]
-                                for sensorposition in range(sensor,sensor+24):
+                                for sensorposition in range(sensor,sensor+15):
+
                                     if feature==1:
                                         FeatureList.append(np.mean(steps[:, sensorposition]))
 
@@ -50,7 +55,7 @@ def Featurefiles(configuration):
                     if sensor!=0:
 
                         featuresforsensors.append(f["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/feature"+str(feature)])
-
+            print np.array(featuresforsensors).shape
             featuresforsession.append(np.array(featuresforsensors).reshape((np.array(featuresforsensors).shape[1], -1)))
 
             print checksum
@@ -106,10 +111,48 @@ def Stepfiles(configuration):
             contentlist = list(f["participant" + str(participant) + "/" + "session" + str(session)+"/" +"rawstep"])
             dataset = []
             for i in range(len(contentlist)):
-                featuredata.append(f["participant" + str(participant) + "/" + "session" + str(session)+"/" +"rawstep"+"/" +str(i)])
+                dataset.append(f["participant" + str(participant) + "/" + "session" + str(session)+"/" +"rawstep"+"/" +str(i)])
+            featuredata.append(np.concatenate(dataset))
             featurelabel.append(f["participant" + str(participant) + "/" + "session" + str(session)+"/"+"labelstep"])
 
     return featuredata,featurelabel
 
 
+def to_dataframe(featuredata,configuration,dictionary):
+    dataframes=[]
+    for i in range(len(featuredata)):
+        dataframes.append(pd.DataFrame(featuredata[i][:,2:]))
 
+    Frame=pd.concat(dataframes,axis=1)
+    print (Frame)
+    Frame = np.array(Frame)
+    print Frame
+
+
+    participantshead=[]
+    sessionshead=[]
+    sensorhead=[]
+    for participant in configuration.get("Participants"):
+        participantshead.append(dictionary[0].get(participant))
+    for session in configuration.get("Sessions"):
+        sessionshead.append(dictionary[1].get(session))
+    for sensor in configuration.get("Sensors"):
+        sensorhead.append(dictionary[2].get(sensor))
+
+    valueshead=["AccX","AccY","AccZ","GyrX","GyrY","GyrZ","MagX","MagY","MagZ","QuatA","QuatB","QuatC","QuatD","V1X","V1Y","V1Z","V2X","V2Y","V2Z","V3X","V3Y","V3Z"]
+
+
+
+    header = pd.MultiIndex.from_product([participantshead,
+                                         sessionshead,
+                                         sensorhead,
+                                         valueshead],
+                                        names=["Participant", 'Session', "Sensor", "Sensoraxis"])
+    print len(header.labels)
+    print len(header.labels[0])
+    print len(header.labels[1])
+    print len(header.labels[2])
+    print len(header.labels[3])
+
+    SensorData = pd.DataFrame(Frame,columns=header)
+    print SensorData

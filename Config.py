@@ -13,8 +13,8 @@ def loadconfig():
     UseXsensData = 1
     if(UseXsensData==1):
         Participant1 = 0
-        Participant2 = 0
-        Participant3 = 1
+        Participant2 = 1
+        Participant3 = 0
         Participant4 = 1
         Participant5 = 1
         Participant6 = 0
@@ -23,9 +23,9 @@ def loadconfig():
         Participant9 = 0
         Participant10 = 0
         Session1 = 0
-        Session2 = 0
+        Session2 = 1
         Session3 = 1
-        Session4 = 1
+        Session4 = 0
         Session5 = 0
         Unlabeleddata = 1
 
@@ -57,6 +57,7 @@ def loadconfig():
     RLL = 0     # Right Lower Leg
     RUF = 0     # Right Upper Foot -Shimmer available
 
+    #Todo Standartisation, Normalisation
 
     # -------Feature Selection------------
 
@@ -82,7 +83,9 @@ def loadconfig():
 
 
 
-
+    dictionary = [{1:"Participant1",2:"Participant2",3:"Participant3",4:"Participant4",5:"Participant5",6:"Participant6",7:"Participant7",8:"Participant8",9:"Participant9"},
+                  {1:"Session1",2:"Session2",3:"Session3",4:"Session4",5:"Session5"},
+                  {STE*2:"STE",LUA*24:"LUA",LLA*46:"LLA",LNS*68:"LNS",RUA*90:"RUA",RLA*112:"RLA",RNS*134:"RNS",Cen*156:"CEN",LUL*178:"LUL",LLL*200:"LLL",LUF*222:"LUF",RUL*244:"RUL",RLL*266:"RLL",RUF*288:"RUF"}]
 
 
 
@@ -98,4 +101,4 @@ def loadconfig():
                     "Sessions":np.where(Session==1)[0]+1,
                     "Sensors":[STE*2,LUA*24,LLA*46,LNS*68,RUA*90,RLA*112,RNS*134,Cen*156,LUL*178,LLL*200,LUF*222,RUL*244,RLL*266,RUF*288],
                     "Features":np.where(Features==1)[0]+1}
-    return configuration
+    return configuration, dictionary

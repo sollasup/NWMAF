@@ -78,6 +78,7 @@ def maxAbsFreq(signal):
     zeroMean = computeZeroMean(signal)
     fft = computeFFT(zeroMean)
     bins, abs, real, imag = computeValues(fft, 1)
+
     maxAbsValue, matrixPosition = globalMax(abs)
 
     maxAbsFreq = bins[matrixPosition]

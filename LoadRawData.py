@@ -17,6 +17,7 @@ def loaddata(configuration):
             except KeyError:
                 e = False
             if e==False:
+                print "ID00"+str(participant)+str(session)
                 RawSensorData.append(pd.read_csv(r'C:\Users\Sebastian\Documents\Recordings/'+"ID00"+str(participant)
                             +"/"+str(session)+"/"+"mergedID00"+str(participant)+"cut.csv",sep="\t"))
                 elan=pd.read_csv(r'C:\Users\Sebastian\Documents\Recordings/' + "ID00" + str(participant)
