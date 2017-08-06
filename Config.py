@@ -12,20 +12,20 @@ def loadconfig():
     # Xsens setup
     UseXsensData = 1
     if(UseXsensData==1):
-        Participant1 = 0
+        Participant1 = 1
         Participant2 = 1
-        Participant3 = 0
+        Participant3 = 1
         Participant4 = 1
         Participant5 = 1
-        Participant6 = 0
-        Participant7 = 0
-        Participant8 = 0
+        Participant6 = 1
+        Participant7 = 1
+        Participant8 = 1
         Participant9 = 0
         Participant10 = 0
-        Session1 = 0
+        Session1 = 1
         Session2 = 1
         Session3 = 1
-        Session4 = 0
+        Session4 = 1
         Session5 = 0
         Unlabeleddata = 1
 
@@ -50,8 +50,8 @@ def loadconfig():
     RLA = 0     # RIGHT Lower Arm
     RNS = 1     # RIGHT Nordic Walking Stick -Shimmer available
     Cen = 0     # Center Back
-    LUL = 1     # LEFT Upper Leg
-    LLL = 0     # LEFT Lower Leg
+    LUL = 0     # LEFT Upper Leg
+    LLL = 1     # LEFT Lower Leg
     LUF = 0     # LEFT Upper Foot -Shimmer available
     RUL = 1     # Right Upper Leg
     RLL = 0     # Right Lower Leg
@@ -62,8 +62,20 @@ def loadconfig():
     # -------Feature Selection------------
 
     average = 1
-    maximum = 1
-    minimum = 1
+    maximum = 0
+    minimum = 0
+    energy=1
+    percentile=1
+    percentile5=1
+    percentile20=0
+    percentile50=0
+    skew=0
+    maxposition=0
+    test=0
+    normalizemean=1
+    scaleaverage=0
+    scalemax=1
+    scalemin=1
 
     # -------Choose Classifier------------
     # Select Classifier from the Scikit learn library
@@ -94,11 +106,13 @@ def loadconfig():
      Participant6, Participant7, Participant8, Participant9, Participant10])
 
     Session = np.array([Session1,Session2,Session3,Session4,Session5])
-
-    Features = np.array([average,maximum,minimum])
+    Sensorlist= [STE*2,LUA*24,LLA*46,LNS*68,RUA*90,RLA*112,RNS*134,Cen*156,LUL*178,LLL*200,LUF*222,RUL*244,RLL*266,RUF*288]
+    Sensorlist=[x for x in Sensorlist if x != 0]
+    print Sensorlist
+    Features = np.array([average,maximum,minimum,energy,percentile,percentile5,percentile20,percentile50,skew,maxposition,test,normalizemean,scaleaverage,scalemax,scalemin])
 
     configuration= {"Participants":np.where(Participant==1)[0]+1,
                     "Sessions":np.where(Session==1)[0]+1,
-                    "Sensors":[STE*2,LUA*24,LLA*46,LNS*68,RUA*90,RLA*112,RNS*134,Cen*156,LUL*178,LLL*200,LUF*222,RUL*244,RLL*266,RUF*288],
+                    "Sensors":Sensorlist,
                     "Features":np.where(Features==1)[0]+1}
     return configuration, dictionary

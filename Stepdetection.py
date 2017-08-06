@@ -27,8 +27,7 @@ def elantosteps(dataMatrix,elan):
     new = np.c_[new,elanschub]
     new = np.c_[new,elanfuss]
     new = np.c_[new,elanverkrampfung]
-    print len(new)
-    print len(elantiming)
+
     new = np.c_[new,elanober]
     new = np.c_[new,elantiming]
     new = np.c_[new,elanshwingen]
@@ -106,7 +105,7 @@ def videosteps(dataMatrix, elan):
         nearest = steps[nearest,1]
         realsteps.append([int(nearest2),int(nearest),int(elan[i,0])*20,int(elan[i,1])*20])
     realsteps = np.array(realsteps)
-    if True:
+    if False:
         plt.plot(newMatrix[:,[202,268]],label = "Beschleunigung senkrecht")
 
         plt.axvline(3,color ='g',label="Bergsteigeralgorithmus Schritt")
@@ -209,8 +208,7 @@ def getmaximas(dataMatrix, Sensor=[290]):
 
     maxAbsValue, maxAbsFreq = FourierTransformation.maxAbsFreq(signal[:])
     Filtered = filter(dataMatrix,Sensor,maxAbsFreq)
-    plt.plot(Filtered[:,Sensor])
-    plt.show()
+    
     return argrelmax(Filtered[:,Sensor],order=23)
 
 
