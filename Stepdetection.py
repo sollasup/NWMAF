@@ -20,6 +20,7 @@ def elantosteps(dataMatrix,elan):
     elantiming = np.array(elan.ix['2Timing'])[:,3]
     elanshwingen = np.array(elan.ix['3Vorschwingen'])[:,3]
     elanblick = np.array(elan.ix['3Blick'])[:,3]
+
     new = np.c_[step,elanpass]
     new = np.c_[new,elanstock]
     new = np.c_[new,elanarm]
@@ -33,12 +34,19 @@ def elantosteps(dataMatrix,elan):
     new = np.c_[new,elanshwingen]
     new = np.c_[new,elanblick]
 
-    temp = 1
+    temp = 2
     for k in range(4,len(new[1,:])):
-
         for t in range(0,len(new)):
-            if new[t,k]==3 or new[t,k]==2 or new[t,k]==1:
-                temp = new[t,k]
+
+            if new[t,k]==3 or   new[t,k]=="3":
+                new[t, k]=3
+                temp = 3
+            if new[t,k]==2 or new[t,k]=="2":
+                new[t, k]=2
+                temp = 2
+            if new[t, k] == 1 or  new[t,k]=="1":
+                new[t, k]=1
+                temp = 1
             else:
                 new[t,k]= temp
 
@@ -50,9 +58,13 @@ def elantosteps(dataMatrix,elan):
             new[i,4:]=3
     labeldata = []
     for i in range(0,len(new)):
-            if new[i,4]==3 or new[i,4]==2 or new[i,4]==1:
-                labeldata.append(new[i,:])
+            print new[i,4]
+            if  new[i,4]==1 or new[i,4]==3 or new[i,4]==2:
+                print new[i,:]
+                labeldata.append((new[i,:]))
+
     labeldata = np.array(labeldata)
+    print labeldata[:, 5]
     matrixsteps = [matrix[labeldata[0,0]:labeldata[0,1],:]]
     for i in range(1,len(labeldata)):
         matrixsteps.append(matrix[labeldata[i,0]:labeldata[i,1],:])
@@ -81,6 +93,7 @@ def elantosteps(dataMatrix,elan):
     label = label[:,:]
 
     labelnew = label[:,4:]
+
 
 
     return matrixsteps,labelnew,matrixstepspass,labelpass[:,0]

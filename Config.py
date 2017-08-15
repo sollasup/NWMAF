@@ -51,9 +51,9 @@ def loadconfig():
     RNS = 1     # RIGHT Nordic Walking Stick -Shimmer available
     Cen = 0     # Center Back
     LUL = 0     # LEFT Upper Leg
-    LLL = 1     # LEFT Lower Leg
+    LLL = 0     # LEFT Lower Leg
     LUF = 0     # LEFT Upper Foot -Shimmer available
-    RUL = 1     # Right Upper Leg
+    RUL = 0     # Right Upper Leg
     RLL = 0     # Right Lower Leg
     RUF = 0     # Right Upper Foot -Shimmer available
 
@@ -61,21 +61,38 @@ def loadconfig():
 
     # -------Feature Selection------------
 
-    average = 1
+    average = 0
     maximum = 0
-    minimum = 0
-    energy=1
-    percentile=1
+    minimum =0
+    energy=0
+    percentile=0
     percentile5=1
     percentile20=0
     percentile50=0
     skew=0
     maxposition=0
     test=0
-    normalizemean=1
+    normalizemean=0#collision with nan
     scaleaverage=0
-    scalemax=1
-    scalemin=1
+    scalemax=0
+    scalemin=0
+    scalepercentile5=0
+    medianaverage=0
+    medianmax=0
+    medianmin=0
+    maxpositionmed=0
+    maxpositionfilter=1
+    minpositionfilter=1
+    maxfilter=1
+    minfilter=1
+    filterskew=0
+    filterpercentile=1
+    maxpositionfilter2 = 1
+    minpositionfilter2 = 1
+    maxfilter2 = 1
+    minfilter2 = 1
+    filterskew2 = 1
+    filterpercentile2 = 1
 
     # -------Choose Classifier------------
     # Select Classifier from the Scikit learn library
@@ -109,7 +126,8 @@ def loadconfig():
     Sensorlist= [STE*2,LUA*24,LLA*46,LNS*68,RUA*90,RLA*112,RNS*134,Cen*156,LUL*178,LLL*200,LUF*222,RUL*244,RLL*266,RUF*288]
     Sensorlist=[x for x in Sensorlist if x != 0]
     print Sensorlist
-    Features = np.array([average,maximum,minimum,energy,percentile,percentile5,percentile20,percentile50,skew,maxposition,test,normalizemean,scaleaverage,scalemax,scalemin])
+    Features = np.array([average,maximum,minimum,energy,percentile,percentile5,percentile20,percentile50,skew,maxposition,test,normalizemean,scaleaverage,scalemax,scalemin,scalepercentile5,
+                         medianaverage,medianmax,medianmin,maxpositionmed,maxpositionfilter,minpositionfilter,maxfilter,minfilter,filterskew,filterpercentile,maxpositionfilter2,minpositionfilter2,maxfilter2,minfilter2,filterskew2,filterpercentile2])
 
     configuration= {"Participants":np.where(Participant==1)[0]+1,
                     "Sessions":np.where(Session==1)[0]+1,

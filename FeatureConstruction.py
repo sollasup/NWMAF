@@ -7,12 +7,17 @@ from sklearn.preprocessing import normalize
 from sklearn import preprocessing
 import Stepdetection
 from scipy import stats
+from scipy.signal import butter, lfilter, freqz
+
 import pandas as pd
+from sklearn.preprocessing import Imputer
+from scipy.signal import medfilt
 
 
 
 def Featurefiles(configuration):
     f = h5py.File("mytestfile.hdf5", "a")
+    d = h5py.File("feature.hdf5", "a")
     featuresforsession = []
     checksum=0
     for participant in configuration.get("Participants"):
@@ -26,7 +31,7 @@ def Featurefiles(configuration):
                 for feature in configuration.get("Features"):
                     e = True
                     try:
-                        f["participant" + str(participant) + "/" + "session" + str(
+                        d["participant" + str(participant) + "/" + "session" + str(
                             session) + "/" + "sensor"+str(sensor)+ "/" + "feature"+str(feature)]
                     except KeyError:
                         e = False
@@ -40,10 +45,13 @@ def Featurefiles(configuration):
                         if sensor !=0:
                             Stepfeatures=[]
                             for steps in dataset:
+                                imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
+                                imp.fit(steps)
+                                steps = imp.transform(steps)
                                 FeatureList=[]
 
 
-                                for sensorposition in range(sensor,sensor+9):
+                                for sensorposition in range(sensor,sensor+22):
 
                                     if feature==1:
                                         FeatureList.append(np.mean(steps[:, sensorposition]))
@@ -76,16 +84,61 @@ def Featurefiles(configuration):
                                         FeatureList.append(np.max(preprocessing.scale(steps[:, sensorposition])))
                                     if feature == 15:
                                         FeatureList.append(np.min(preprocessing.scale(steps[:, sensorposition])))
+                                    if feature == 16:
+                                        FeatureList.append(np.percentile(preprocessing.scale(steps[:, sensorposition]),5))
+                                    if feature == 17:
+                                        FeatureList.append(np.mean(medfilt(steps[:, sensorposition],3)))
 
+                                    if feature == 18:
+                                        FeatureList.append(np.max(medfilt(steps[:, sensorposition],3)))
+                                    if feature == 19:
+                                        FeatureList.append(np.min(medfilt(steps[:, sensorposition],3)))
+                                    if feature == 20:
+                                        FeatureList.append(np.argmax(medfilt(steps[:, sensorposition], 3)))
+                                    if feature == 21:
+                                        FeatureList.append(np.argmax(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 22:
+                                        FeatureList.append(
+                                            np.argmin(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 23:
+                                        FeatureList.append(
+                                            np.max(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 24:
+                                        FeatureList.append(
+                                            np.min(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 25:
+                                        FeatureList.append(
+                                            stats.skew(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 26:
+                                        FeatureList.append(
+                                            np.percentile(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6),5))
+                                    if feature == 27:
+                                        FeatureList.append(
+                                            np.argmax(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 28:
+                                        FeatureList.append(
+                                            np.argmin(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 29:
+                                        FeatureList.append(
+                                            np.max(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 30:
+                                        FeatureList.append(
+                                            np.min(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 31:
+                                        FeatureList.append(
+                                            stats.skew(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 32:
+                                        FeatureList.append(
+                                            np.percentile(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6), 5))
 
                                 Stepfeatures.append(FeatureList)
                             Stepfeatures= np.array(Stepfeatures)
-                            f.create_dataset(("participant" + str(participant) + "/" + "session" + str(
+                            d.create_dataset(("participant" + str(participant) + "/" + "session" + str(
                             session) + "/" + "sensor"+str(sensor)+ "/" + "feature"+str(feature)),
                                              data=Stepfeatures)
                     if sensor!=0:
 
-                        featuresforsensors.append(f["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/feature"+str(feature)])
+                        featuresforsensors.append(d["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/feature"+str(feature)][:,[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15]])
             print np.array(featuresforsensors).shape
 
 
@@ -99,6 +152,7 @@ def Featurefiles(configuration):
 
 def Featurefilescamera(configuration):
     f = h5py.File("mytestfile.hdf5", "a")
+    c= h5py.File("featurecamera.hdf5", "a")
     featuresforsession = []
     checksum=0
     for participant in configuration.get("Participants"):
@@ -112,7 +166,7 @@ def Featurefilescamera(configuration):
                 for feature in configuration.get("Features"):
                     e = True
                     try:
-                        f["participant" + str(participant) + "/" + "session" + str(
+                        c["participant" + str(participant) + "/" + "session" + str(
                             session) + "/" + "sensor"+str(sensor)+ "/" + "featurecam"+str(feature)]
                     except KeyError:
                         e = False
@@ -126,9 +180,12 @@ def Featurefilescamera(configuration):
                         if sensor !=0:
                             Stepfeatures=[]
                             for steps in dataset:
+                                imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
+                                imp.fit(steps)
+                                steps = imp.transform(steps)
                                 FeatureList=[]
 
-                                for sensorposition in range(sensor,sensor+9):
+                                for sensorposition in range(sensor,sensor+22):
 
                                     if feature==1:
                                         FeatureList.append(np.mean(steps[:, sensorposition]))
@@ -161,16 +218,63 @@ def Featurefilescamera(configuration):
                                         FeatureList.append(np.max(preprocessing.scale(steps[:, sensorposition])))
                                     if feature == 15:
                                         FeatureList.append(np.min(preprocessing.scale(steps[:, sensorposition])))
+                                    if feature == 16:
+                                        FeatureList.append(np.percentile(preprocessing.scale(steps[:, sensorposition]),5))
+                                    if feature == 17:
+                                        FeatureList.append(np.mean(medfilt(steps[:, sensorposition], 3)))
 
+                                    if feature == 18:
+                                        FeatureList.append(np.max(medfilt(steps[:, sensorposition], 3)))
+                                    if feature == 19:
+                                        FeatureList.append(np.min(medfilt(steps[:, sensorposition], 3)))
+                                    if feature == 20:
+                                        FeatureList.append(np.argmax(medfilt(steps[:, sensorposition], 3)))
+                                    if feature == 21:
+                                        FeatureList.append(
+                                            np.argmax(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 22:
+                                        FeatureList.append(
+                                            np.argmin(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 23:
+                                        FeatureList.append(
+                                            np.max(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 24:
+                                        FeatureList.append(
+                                            np.min(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 25:
+                                        FeatureList.append(
+                                            stats.skew(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6)))
+                                    if feature == 26:
+                                        FeatureList.append(
+                                            np.percentile(butter_lowpass_filter(steps[:, sensorposition], 3, 50, 6), 5))
+                                    if feature == 27:
+                                        FeatureList.append(
+                                            np.argmax(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 28:
+                                        FeatureList.append(
+                                            np.argmin(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 29:
+                                        FeatureList.append(
+                                            np.max(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 30:
+                                        FeatureList.append(
+                                            np.min(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 31:
+                                        FeatureList.append(
+                                            stats.skew(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6)))
+                                    if feature == 32:
+                                        FeatureList.append(
+                                            np.percentile(butter_lowpass_filter(steps[:, sensorposition], 10, 50, 6),
+                                                          5))
 
                                 Stepfeatures.append(FeatureList)
                             Stepfeatures= np.array(Stepfeatures)
-                            f.create_dataset(("participant" + str(participant) + "/" + "session" + str(
+                            c.create_dataset(("participant" + str(participant) + "/" + "session" + str(
                             session) + "/" + "sensor"+str(sensor)+ "/" + "featurecam"+str(feature)),
                                              data=Stepfeatures)
                     if sensor!=0:
 
-                        featuresforsensors.append(f["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/featurecam"+str(feature)])
+                        featuresforsensors.append(c["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/featurecam"+str(feature)][:,[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15]])
             print np.array(featuresforsensors).shape
 
 
@@ -263,7 +367,8 @@ def Stepfiles(configuration):
             dataset = []
             for i in range(len(contentlist)):
                 dataset.append(f["participant" + str(participant) + "/" + "session" + str(session)+"/" +"rawstep"+"/" +str(i)])
-            featuredata.append(np.concatenate(dataset))
+
+            featuredata.append((dataset))
             featurelabel.append(f["participant" + str(participant) + "/" + "session" + str(session)+"/"+"labelstep"])
             featurelabelcamera.append(f["participant" + str(participant) + "/" + "session" + str(session)+"/"+"labelstepcamera"])
     return featuredata,featurelabel,featurelabelcamera
@@ -273,7 +378,7 @@ def to_dataframe(featuredata,featurelabel,configuration,dictionary):
     dataframes=[]
     labelframes=[]
     for i in range(len(featuredata)):
-        dataframes.append(pd.DataFrame(featuredata[i][:,2:]))
+        dataframes.append(pd.DataFrame(np.concatenate(featuredata[i])[:,2:]))
         labelframes.append(pd.DataFrame(featurelabel[i][:,:]))
     labelFrame=pd.concat(labelframes,axis=1)
     Frame=pd.concat(dataframes,axis=1)
@@ -311,3 +416,13 @@ def to_dataframe(featuredata,featurelabel,configuration,dictionary):
     return SensorData,LabelData
 
 
+def butter_lowpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return b, a
+
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+    b, a = butter_lowpass(cutoff, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
