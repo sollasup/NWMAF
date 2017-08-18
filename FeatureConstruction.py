@@ -138,7 +138,7 @@ def Featurefiles(configuration):
                                              data=Stepfeatures)
                     if sensor!=0:
 
-                        featuresforsensors.append(d["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/feature"+str(feature)][:,[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15]])
+                        featuresforsensors.append(d["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/feature"+str(feature)][:,[0,1,2,3,4,5,10,11,12,13,14,15]])
             print np.array(featuresforsensors).shape
 
 
@@ -274,7 +274,7 @@ def Featurefilescamera(configuration):
                                              data=Stepfeatures)
                     if sensor!=0:
 
-                        featuresforsensors.append(c["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/featurecam"+str(feature)][:,[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15]])
+                        featuresforsensors.append(c["participant" + str(participant) + "/" + "session" + str(session) + "/" + "sensor"+str(sensor)+"/featurecam"+str(feature)][:,[0,1,2,3,4,5,10,11,12,13,14,15]])
             print np.array(featuresforsensors).shape
 
 

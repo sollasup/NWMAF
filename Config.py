@@ -20,14 +20,14 @@ def loadconfig():
         Participant6 = 1
         Participant7 = 1
         Participant8 = 1
-        Participant9 = 0
-        Participant10 = 0
+        Participant9 = 1
+        Participant10 = 1
+        Participant11=0
         Session1 = 1
         Session2 = 1
         Session3 = 1
         Session4 = 1
-        Session5 = 0
-        Unlabeleddata = 1
+        Session5 = 1
 
     # Shimmer setup
     UseShimmerData = 1
@@ -42,14 +42,14 @@ def loadconfig():
 
     # --------Sensor Selection-------------
     # Select Sensors, not all available on Shimmer setup
-    STE = 0     # STENUM
+    STE = 1     # STENUM
     LUA = 0     # LEFT Upper Arm
     LLA = 0     # LEFT Lower Arm
     LNS = 1     # LEFT Nordic Walking Stick - Shimmer available
     RUA = 0     # RIGHT Upper Arm
     RLA = 0     # RIGHT Lower Arm
     RNS = 1     # RIGHT Nordic Walking Stick -Shimmer available
-    Cen = 0     # Center Back
+    Cen = 1     # Center Back
     LUL = 0     # LEFT Upper Leg
     LLL = 0     # LEFT Lower Leg
     LUF = 0     # LEFT Upper Foot -Shimmer available
@@ -61,10 +61,10 @@ def loadconfig():
 
     # -------Feature Selection------------
 
-    average = 0
-    maximum = 0
-    minimum =0
-    energy=0
+    average = 1
+    maximum = 1
+    minimum =1
+    energy=1
     percentile=0
     percentile5=1
     percentile20=0
@@ -112,7 +112,7 @@ def loadconfig():
 
 
 
-    dictionary = [{1:"Participant1",2:"Participant2",3:"Participant3",4:"Participant4",5:"Participant5",6:"Participant6",7:"Participant7",8:"Participant8",9:"Participant9"},
+    dictionary = [{1:"Participant1",2:"Participant2",3:"Participant3",4:"Participant4",5:"Participant5",6:"Participant6",7:"Participant7",8:"Participant8",9:"Participant9",10:"Participant10",11:"Participant11"},
                   {1:"Session1",2:"Session2",3:"Session3",4:"Session4",5:"Session5"},
                   {STE*2:"STE",LUA*24:"LUA",LLA*46:"LLA",LNS*68:"LNS",RUA*90:"RUA",RLA*112:"RLA",RNS*134:"RNS",Cen*156:"CEN",LUL*178:"LUL",LLL*200:"LLL",LUF*222:"LUF",RUL*244:"RUL",RLL*266:"RLL",RUF*288:"RUF"}]
 
@@ -120,7 +120,7 @@ def loadconfig():
 
     #Creating a configuration dictionary for further use
     Participant = np.array([Participant1, Participant2, Participant3, Participant4, Participant5,
-     Participant6, Participant7, Participant8, Participant9, Participant10])
+     Participant6, Participant7, Participant8, Participant9, Participant10,Participant11])
 
     Session = np.array([Session1,Session2,Session3,Session4,Session5])
     Sensorlist= [STE*2,LUA*24,LLA*46,LNS*68,RUA*90,RLA*112,RNS*134,Cen*156,LUL*178,LLL*200,LUF*222,RUL*244,RLL*266,RUF*288]
